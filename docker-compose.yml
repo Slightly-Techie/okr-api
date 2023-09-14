@@ -1,0 +1,26 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:14.2-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: "postgres -c 'max_connections=500'"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  api:
+    build: .
+    environment:
+      - GIN_MODE=${GIN_MODE}
+      - PORT=${PORT}
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+
+volumes:
+  postgres_data: {}
+  app-storage: {}
