@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/Slightly-Techie/okr-api/database"
 	"github.com/Slightly-Techie/okr-api/models"
@@ -11,16 +12,18 @@ import (
 
 func setupRouter(r *gin.Engine) {
 	r.GET("/", routes.DefaultHandler)
-	r.POST("/test", routes.TestHandler)
+	r.POST("/test", routes.TestCreateHandler)
+	r.GET("/get", routes.TestGetHandler)
 }
 
 func main() {
-	db := database.GetConnection()
+	database.InitDB()
+	db := database.GetDB()
 	db.AutoMigrate(models.Test{})
 
 	router := gin.Default()
 	setupRouter(router)
-	err := router.Run(":5000")
+	err := router.Run(os.Getenv(":5000"))
 	if err != nil {
 		log.Fatalf("gin Run error: %s", err)
 	}
