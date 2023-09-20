@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 
 	"github.com/Slightly-Techie/okr-api/database"
 	"github.com/Slightly-Techie/okr-api/models"
@@ -23,7 +22,7 @@ func main() {
 
 	router := gin.Default()
 	setupRouter(router)
-	err := router.Run(os.Getenv(":5000"))
+	err := router.Run(":5000")
 	if err != nil {
 		log.Fatalf("gin Run error: %s", err)
 	}

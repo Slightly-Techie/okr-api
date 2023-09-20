@@ -3,7 +3,9 @@ package database
 import (
 	"fmt"
 	"log"
+	"os"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -19,10 +21,10 @@ type database struct {
 
 func NewDb() *database {
 	db := &database{
-		HOST:     "localhost",
-		USER:     "postgres",
-		PASSWORD: "1234",
-		NAME:     "postgres",
+		HOST:     os.Getenv("DOCKER_NETWORK"),
+		USER:     os.Getenv("POSTGRES_USER"),
+		PASSWORD: os.Getenv("POSTGRES_PASSWORD"),
+		NAME:     os.Getenv("POSTGRES_DB"),
 	}
 	return db
 }
@@ -30,6 +32,10 @@ func NewDb() *database {
 var db *gorm.DB
 
 func InitDB() error {
+	er := godotenv.Load()
+	if er != nil {
+		log.Fatalf("Error loading .env file: %v", er)
+	}
 	Db := NewDb()
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Shanghai", Db.HOST, Db.USER, Db.PASSWORD, Db.NAME)
 
@@ -56,7 +62,7 @@ func GetDB() *gorm.DB {
 	return db
 }
 
-func CreateItem(model interface{}) error {
+func CreateItem[T any](model T) error {
 	if db == nil {
 		return fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
 	}
@@ -80,8 +86,8 @@ func GetItems[T any](model *[]T) (*[]T, error) {
 	return model, nil
 }
 
-func GetItem(model interface{}) {}
+func GetItem[T any](model T) {}
 
-func UpdateItem(model interface{}) {}
+func UpdateItem[T any](model T) {}
 
-func DeleteItem(model interface{}) {}
+func DeleteItem[T any](model T) {}
