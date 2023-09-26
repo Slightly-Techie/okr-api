@@ -13,6 +13,7 @@ func setupRouter(r *gin.Engine) {
 	r.GET("/", routes.DefaultHandler)
 	r.POST("/test", routes.TestCreateHandler)
 	r.GET("/get", routes.TestGetHandler)
+	r.POST("/auth/validate", routes.LoginHandler)
 }
 
 func main() {
