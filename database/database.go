@@ -67,27 +67,53 @@ func CreateItem[T any](model T) error {
 		return fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
 	}
 
-	result := db.Create(model)
-	if result.Error != nil {
-		return result.Error
+	result := db.Create(model).Error
+	if result != nil {
+		return result
 	}
 	return nil
 }
 
-func GetItems[T any](model *[]T) (*[]T, error) {
+func GetAllItems[T any](model *[]T, column, value string) (*[]T, error) {
 	if db == nil {
 		return nil, fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
 	}
 
-	if err := db.Find(model).Error; err != nil {
+	if err := db.Where(column+"= ?", value).Find(model).Error; err != nil {
 		return nil, err
 	}
 
 	return model, nil
 }
 
-func GetItem[T any](model T) {}
+func GetItem[T any](model *T, column, value string) (*T, error) {
+	if db == nil {
+		return nil, fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
+	}
+	if err := db.Where(column+"= ?", value).Find(&model).Error; err != nil {
+		return nil, err
+	}
+	return model, nil
+}
 
-func UpdateItem[T any](model T) {}
+func UpdateItem[T any](model T, index, id, column, value string) error {
+	if db == nil {
+		return fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
+	}
 
-func DeleteItem[T any](model T) {}
+	if err := db.Model(&model).Where(index+"= ?", id).Update(column, value).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteItem[T any](model T, column, value string) error {
+	if db == nil {
+		return fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
+	}
+	if err := db.Where(column+"= ?", value).Delete(&model).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

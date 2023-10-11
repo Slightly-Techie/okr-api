@@ -23,13 +23,51 @@ func TestCreateHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": data})
 }
 
-func TestGetHandler(c *gin.Context) {
+func TestGetItemsHandler(c *gin.Context) {
 	var data []models.Test
-	_, err := database.GetItems(&data)
+	_, err := database.GetAllItems(&data, "name", "dexter")
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": data})
+}
+
+func TestGetItemHandler(c *gin.Context) {
+	var data models.Test
+	_, err := database.GetItem(&data, "id", "1")
+
+	if err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{"success": "false"})
+		return
+	}
+	if data.ID == 0 {
+		c.JSON(http.StatusOK, gin.H{"success": true, "data": ""})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": data})
+}
+
+func TestUpdateItemHandler(c *gin.Context) {
+	var data models.Test
+	err := database.UpdateItem(data, "id", "4", "name", "diego")
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "updated successfully"})
+}
+
+func TestDeleteItemHandler(c *gin.Context) {
+	var data models.Test
+
+	err := database.DeleteItem(data, "id", "1")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": err})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "deleted successfully"})
+
 }
