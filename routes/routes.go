@@ -3,8 +3,6 @@ package routes
 import (
 	"net/http"
 
-	"github.com/Slightly-Techie/okr-api/database"
-	"github.com/Slightly-Techie/okr-api/models"
 	"github.com/gin-gonic/gin"
 )
 

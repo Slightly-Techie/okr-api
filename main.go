@@ -11,11 +11,11 @@ import (
 
 func setupRouter(r *gin.Engine) {
 	r.GET("/", routes.DefaultHandler)
-	r.POST("/test", routes.TestCreateHandler)
-	r.GET("/get", routes.TestGetItemsHandler)
-	r.GET("/getItem", routes.TestGetItemHandler)
-	r.PUT("/update", routes.TestUpdateItemHandler)
-	r.DELETE("/delete", routes.TestDeleteItemHandler)
+	// r.POST("/test", routes.TestCreateHandler)
+	// r.GET("/get", routes.TestGetItemsHandler)
+	// r.GET("/getItem", routes.TestGetItemHandler)
+	// r.PUT("/update", routes.TestUpdateItemHandler)
+	// r.DELETE("/delete", routes.TestDeleteItemHandler)
 }
 
 func main() {
