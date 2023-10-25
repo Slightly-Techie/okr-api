@@ -9,6 +9,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "6432:5432"
   api:
     build: .
     environment:
@@ -19,7 +21,7 @@ services:
     depends_on:
       - db
     ports:
-      - "5000:5000"
+      - "5001:5000"
 
 volumes:
   postgres_data: {}

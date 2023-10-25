@@ -86,8 +86,31 @@ func GetItems[T any](model *[]T) (*[]T, error) {
 	return model, nil
 }
 
-func GetItem[T any](model T) {}
+func GetItem[T any](model T, id int) (error){
+	if err := db.First(model, id).Error; err != nil {
+		return err
+	}
+	return nil
+}
 
-func UpdateItem[T any](model T) {}
+func GetItemByEmail[T any](model T, email string) (error){
+	if err := db.First(model, "email = ?", email).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateItem[T any](model T) {
+	// if db == nil {
+	// 	fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
+	// 	return
+	// }
+
+	// result := db.Update(model)
+	// if result.Error != nil {
+	// 	return result.Error
+	// }
+	// return nil
+}
 
 func DeleteItem[T any](model T) {}
