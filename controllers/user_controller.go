@@ -34,13 +34,14 @@ func Login() gin.HandlerFunc{
 
 		payload, err := idtoken.Validate(c, loginInfo.Credential, client_id)
 
-		claims := payload.Claims
-		log.Println("Payload: ", claims["email"])
+		
 		if err != nil {
 			log.Fatalf("Could not validate sign in token: %s", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid JWT."})
 			return
 		}
+		claims := payload.Claims
+		log.Println("Payload: ", claims["email"])
 
 		email := claims["email"].(string)
 		first_name := claims["given_name"].(string)
@@ -55,7 +56,7 @@ func Login() gin.HandlerFunc{
 			return
 		}
 
-		c.JSON(http.StatusOK, foundUser)
+		// c.JSON(http.StatusOK, foundUser)
 		token, refreshToken := helpers.GenerateAllTokens(email, first_name, last_name, uid)
 
 		if err != nil && strings.Contains(err.Error(), "not found") {
@@ -72,7 +73,7 @@ func Login() gin.HandlerFunc{
 			user.RefreshToken = refreshToken
 			db.Create(&user)
 
-			c.JSON(http.StatusCreated, &user)
+			c.JSON(http.StatusCreated, user)
 			return
 		}
 
