@@ -1,18 +1,18 @@
 package main
 
 import (
-	"log"
-	"net/http"
 	"github.com/Slightly-Techie/okr-api/database"
 	"github.com/Slightly-Techie/okr-api/models"
 	"github.com/Slightly-Techie/okr-api/routes"
 	"github.com/gin-gonic/gin"
+	"log"
+	"net/http"
 )
 
 func setupRouter(r *gin.Engine) {
 	// r.Use(routes.AuthenticationRequired())
 	r.Use(gin.Recovery())
-	r.GET("/", func(c *gin.Context){
+	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"success": true})
 	})
 }
@@ -20,7 +20,7 @@ func setupRouter(r *gin.Engine) {
 func main() {
 	database.InitDB()
 	db := database.GetDB()
-	db.AutoMigrate(models.Test{}, models.User{})
+	db.AutoMigrate(models.User{})
 
 	router := gin.Default()
 	routes.AuthRoutes(router)

@@ -86,31 +86,38 @@ func GetItems[T any](model *[]T) (*[]T, error) {
 	return model, nil
 }
 
-func GetItem[T any](model T, id int) (error){
+func GetItem[T any](model T, id int) error {
 	if err := db.First(model, id).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func GetItemByEmail[T any](model T, email string) (error){
+func GetItemByEmail[T any](model T, email string) error {
 	if err := db.First(model, "email = ?", email).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func UpdateItem[T any](model T) {
-	// if db == nil {
-	// 	fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
-	// 	return
-	// }
+func UpdateItem[T any](model T, index, id, column, value string) error {
+	if db == nil {
+		return fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
+	}
 
-	// result := db.Update(model)
-	// if result.Error != nil {
-	// 	return result.Error
-	// }
-	// return nil
+	if err := db.Model(&model).Where(index+"= ?", id).Update(column, value).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
-func DeleteItem[T any](model T) {}
+func DeleteItem[T any](model T, column, value string) error {
+	if db == nil {
+		return fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
+	}
+	if err := db.Where(column+"= ?", value).Delete(&model).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
