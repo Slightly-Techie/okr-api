@@ -6,9 +6,9 @@ type Objective struct {
 	gorm.Model
 
 	ObjectiveId string `json:"objectiveId"`
-	Name        string `json:"name"`
+	Title       string `json:"title"`
 	Description string `json:"description"`
-	Creator     string `json:"creator"`
+	UserId      string `json:"userid"`
 	Assignee    string `json:"assignee"`
 	CompanyId   string `json:"companyId"`
 }
