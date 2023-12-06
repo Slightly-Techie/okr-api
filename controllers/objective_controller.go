@@ -39,30 +39,18 @@ func CreateObjective() gin.HandlerFunc {
 	}
 }
 
-func GetObjective() gin.HandlerFunc {
-	return func(c *gin.Context) {
-
-		var objectives models.Objective
-		objId := c.Param("id")
-
-		if err := database.GetItem(objectives, objId); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"data": &objectives})
-	}
-}
-
 func GetObjectives() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var objectives []models.Objective
+		var objectives *[]models.Objective
 		userId := c.Param("id")
 
-		if err := database.GetItem(objectives, userId); err != nil {
+		data, err := database.GetItems(objectives, "user_id", userId)
+		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"data": &objectives})
+
+		c.JSON(http.StatusOK, gin.H{"data": data})
 	}
 }
 
@@ -76,12 +64,14 @@ func UpdateObjective() gin.HandlerFunc {
 			return
 		}
 
-		if err := database.UpdateItem(&models.Objective{}, &objective, "objectiveId", objId); err != nil {
+		update := map[string]interface{}{"title": &objective.Title, "description": &objective.Description, "assignee": &objective.Assignee}
+
+		if err := database.UpdateItem(&models.Objective{}, update, "objective_id", objId); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, "objective created successfully")
+		c.JSON(http.StatusOK, "objective updated successfully")
 	}
 }
 
@@ -90,7 +80,7 @@ func DeleteObjective() gin.HandlerFunc {
 		var model models.Objective
 		objId := c.Param("id")
 
-		if err := database.DeleteItem(model, "objectiveId", objId); err != nil {
+		if err := database.DeleteItem(model, "objective_id", objId); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}

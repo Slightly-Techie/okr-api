@@ -74,16 +74,16 @@ func CreateItem[T any](model T) error {
 	return nil
 }
 
-func GetItems[T any](model *[]T, id string) (*[]T, error) {
+func GetItems[T any](model *[]T, index, id string) ([]T, error) {
 	if db == nil {
 		return nil, fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
 	}
 
-	if err := db.Find(model, id).Error; err != nil {
+	if err := db.Where(index+" = ?", id).Find(&model).Error; err != nil {
 		return nil, err
 	}
 
-	return model, nil
+	return *model, nil
 }
 
 func GetItem[T any](model T, id string) error {
@@ -100,7 +100,7 @@ func GetItemByEmail[T any](model T, email string) error {
 	return nil
 }
 
-func UpdateItem[T any](model, update T, index, id string) error {
+func UpdateItem[T any](model T, updates map[string]interface{}, index, id string) error {
 	if db == nil {
 		return fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
 	}
@@ -109,7 +109,7 @@ func UpdateItem[T any](model, update T, index, id string) error {
 		return err
 	}
 
-	if err := db.Model(&model).Where(index+"= ?", id).Save(update).Error; err != nil {
+	if err := db.Model(&model).Where(index+"= ?", id).Updates(updates).Error; err != nil {
 		return err
 	}
 	return nil

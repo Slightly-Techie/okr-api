@@ -7,7 +7,6 @@ import (
 
 func ObjectiveRoutes(incomingRoutes *gin.Engine) {
 	incomingRoutes.POST("/objective/create", controllers.CreateObjective())
-	incomingRoutes.GET("/objective/get/:id", controllers.GetObjective())
 	incomingRoutes.GET("/objective/get-all/:id", controllers.GetObjectives())
 	incomingRoutes.PUT("/objective/update/:id", controllers.UpdateObjective())
 	incomingRoutes.DELETE("/objective/delete/:id", controllers.DeleteObjective())
