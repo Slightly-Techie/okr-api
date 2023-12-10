@@ -24,3 +24,38 @@ I need to work on that.
   picture: 'https://lh3.googleusercontent.com/a/ACg8ocKjUusyFCStfj5lQ7s9k3Jk_sGHAiqHZRavGzZRZ5TZ=s96-c',
 }
 ```
+
+
+## objectives crud docs
+
+> create endpoint 
+>post : http://localhost:5000/objective/create
+### sample body
+```
+{
+  "title":"test",
+  "description":"testing our endpoints",
+  "assignee":"alex",
+  "userid":"111-222-333"
+}
+```
+>read endpoint
+>get: http://localhost:5000/objective/get-all/:user-id
+```
+```
+
+>update endpoint
+>put endpoint : http://localhost:5000/objective/update/:objective-id
+### sample body
+```
+{
+  "title":"tested 2",
+  "description":"testing our endpoints",
+  "assignee":"alex",
+}
+```
+
+>delete endpoint
+>delete : http://localhost:5000/objective/update/objective-id
+```
+```
