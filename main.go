@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/Slightly-Techie/okr-api/database"
 	"github.com/Slightly-Techie/okr-api/models"
 	"github.com/Slightly-Techie/okr-api/routes"
 	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
 )
 
 func setupRouter(r *gin.Engine) {
@@ -20,11 +21,12 @@ func setupRouter(r *gin.Engine) {
 func main() {
 	database.InitDB()
 	db := database.GetDB()
-	db.AutoMigrate(models.User{})
+	db.AutoMigrate(models.User{}, models.Objective{})
 
 	router := gin.Default()
 	routes.AuthRoutes(router)
 	routes.UserRoutes(router)
+	routes.ObjectiveRoutes(router)
 	setupRouter(router)
 	err := router.Run(":5000")
 	if err != nil {

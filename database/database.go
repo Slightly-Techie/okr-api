@@ -21,7 +21,7 @@ type database struct {
 
 func NewDb() *database {
 	db := &database{
-		HOST:     os.Getenv("DOCKER_NETWORK"),
+		HOST:     os.Getenv("POSTGRES_HOST"),
 		USER:     os.Getenv("POSTGRES_USER"),
 		PASSWORD: os.Getenv("POSTGRES_PASSWORD"),
 		NAME:     os.Getenv("POSTGRES_DB"),
@@ -74,19 +74,19 @@ func CreateItem[T any](model T) error {
 	return nil
 }
 
-func GetItems[T any](model *[]T) (*[]T, error) {
+func GetItems[T any](model *[]T, index, id string) ([]T, error) {
 	if db == nil {
 		return nil, fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
 	}
 
-	if err := db.Find(model).Error; err != nil {
+	if err := db.Where(index+" = ?", id).Find(&model).Error; err != nil {
 		return nil, err
 	}
 
-	return model, nil
+	return *model, nil
 }
 
-func GetItem[T any](model T, id int) error {
+func GetItem[T any](model T, id string) error {
 	if err := db.First(model, id).Error; err != nil {
 		return err
 	}
@@ -100,12 +100,16 @@ func GetItemByEmail[T any](model T, email string) error {
 	return nil
 }
 
-func UpdateItem[T any](model T, index, id, column, value string) error {
+func UpdateItem[T any](model T, updates map[string]interface{}, index, id string) error {
 	if db == nil {
 		return fmt.Errorf("database connection is nil. Make sure to call InitDB() first")
 	}
 
-	if err := db.Model(&model).Where(index+"= ?", id).Update(column, value).Error; err != nil {
+	if err := db.First(&model, index+"= ?", id).Error; err != nil {
+		return err
+	}
+
+	if err := db.Model(&model).Where(index+"= ?", id).Updates(updates).Error; err != nil {
 		return err
 	}
 	return nil
